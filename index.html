@@ -1,4 +1,82 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <style>
+        .vjs-language-menu, .vjs-playlist-nav { display: inline-block; }
+        .video-js { max-width: 100%; }
+        .vjs-playlist-nav button { font-size: 18px; padding: 5px 10px; cursor: pointer; }
+        video { pointer-events: none; } /* Disable right-click */
+    </style>
+</head>
+<body>
+    <div class="vjs-video-container">
+        <video id="videoPlayer" class="video-js vjs-default-skin" controls width="600" height="340"></video>
+    </div>
+
+    <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+    <script>
+        const player = videojs('videoPlayer', {
+            fluid: true,
+            controlBar: {
+                children: ['playToggle', 'volumePanel', 'progressControl', 'captionsButton', 'fullscreenToggle']
+            }
+        });
+
+        let audioElement = new Audio();
+        let currentVideoIndex = 0;
+        let currentLang = 'en'; // Default language
+        let videos = [];
+        let baseDuration = 140;
+
+        player.on('play', () => audioElement.play());
+        player.on('pause', () => audioElement.pause());
+        player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3); // 3s offset
+
+        // Language Menu
+        videojs.registerComponent('LanguageMenu', videojs.extend(videojs.getComponent('MenuButton'), {
+            constructor: function() { this.addClass('vjs-language-menu'); },
+            createMenu: function() {
+                const menu = new videojs.Menu(this.player_, { menuButton: this });
+                videos[currentVideoIndex].languages.forEach((lang, index) => {
+                    const item = new videojs.MenuItem(this.player_, {
+                        label: lang.label,
+                        selectable: true,
+                        selected: lang.code === currentLang
+                    });
+                    item.on('click', () => {
+                        currentLang = lang.code;
+                        audioElement.src = lang.audio;
+                        audioElement.load();
+                        if (!player.paused()) audioElement.play();
+                        player.playbackRate(baseDuration / lang.duration);
+                        player.currentTime(3); // Start at 0:03
+                    });
+                    menu.addItem(item);
+                });
+                return menu;
+            }
+        }));
+
+        // Fetch videos and initialize
+        fetch('https://video-api.keith-9d4.workers.dev')
+            .then(res => res.json())
+            .then(data => {
+                videos = data.videos;
+                player.src(videos[0].video);
+                audioElement.src = videos[0].languages[0].audio;
+                baseDuration = videos[0].baseDuration;
+                player.playbackRate(baseDuration / videos[0].languages[0].duration);
+                player.currentTime(3);
+                player.controlBar.addChild('LanguageMenu', {});
+            });
+
+        // Disable right-click on video
+        document.getElementById('videoPlayer').addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">

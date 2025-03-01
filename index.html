@@ -91,10 +91,7 @@
         let videos = [];
         let baseDuration = 140;
         let currentAudioDuration = 0; // Store current audio duration
-
-        player.on('play', () => audioElement.play());
-        player.on('pause', () => audioElement.pause());
-        player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3);
+        let checkEndInterval = null; // Store interval for cleanup
 
         // Override Video.js duration to match audio
         player.duration = function() {
@@ -110,8 +107,7 @@
                 const seconds = Math.floor(duration % 60);
                 durationDisplay.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
-            // Force progress bar to reflect the new duration
-            player.trigger('durationchange');
+            player.trigger('durationchange'); // Force progress bar update
         }
 
         // Adjust playback rate and duration
@@ -120,14 +116,35 @@
             player.playbackRate(newPlaybackRate);
             updateDurationDisplay(lang.duration);
             // Stop video when audio ends
+            if (checkEndInterval) {
+                clearInterval(checkEndInterval); // Clear previous interval
+            }
             const videoEndTime = lang.duration;
-            const checkEndInterval = setInterval(() => {
+            checkEndInterval = setInterval(() => {
                 if (player.currentTime() >= videoEndTime) {
                     player.pause();
                     clearInterval(checkEndInterval);
                 }
             }, 1000);
         }
+
+        // Synchronize audio with video
+        player.on('play', () => {
+            if (player.currentTime() < 3) {
+                audioElement.currentTime = 0; // Audio starts at 0 when video starts
+            } else {
+                audioElement.currentTime = player.currentTime() - 3; // Audio starts 3s behind video
+            }
+            audioElement.play();
+        });
+        player.on('pause', () => audioElement.pause());
+        player.on('seeking', () => {
+            if (player.currentTime() < 3) {
+                audioElement.currentTime = 0;
+            } else {
+                audioElement.currentTime = player.currentTime() - 3;
+            }
+        });
 
         // Language Menu Setup
         const languageButton = document.querySelector('.language-button');
@@ -153,7 +170,7 @@
                     audioElement.load();
                     if (!player.paused()) audioElement.play();
                     adjustPlaybackForLanguage(lang);
-                    player.currentTime(3);
+                    player.currentTime(0); // Start video at 0
                     languageMenu.classList.remove('visible');
                     const items = languageMenu.querySelectorAll('.language-item');
                     items.forEach(i => i.classList.remove('vjs-selected'));
@@ -174,7 +191,7 @@
                 audioElement.src = videos[0].languages[0].audio;
                 baseDuration = videos[0].baseDuration;
                 adjustPlaybackForLanguage(videos[0].languages[0]);
-                player.currentTime(3);
+                player.currentTime(0); // Start video at 0
                 populateLanguageMenu();
             })
             .catch(error => {

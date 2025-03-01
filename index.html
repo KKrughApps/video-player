@@ -87,6 +87,7 @@
         let currentLang = 'en'; // Default language
         let videos = [];
         let baseDuration = 140;
+        let currentAudioDuration = 0; // Store current audio duration
 
         player.on('play', () => audioElement.play());
         player.on('pause', () => audioElement.pause());
@@ -96,6 +97,7 @@
         function updateDurationDisplay(duration) {
             const durationDisplay = player.controlBar.getChild('durationDisplay');
             if (durationDisplay) {
+                currentAudioDuration = duration;
                 const minutes = Math.floor(duration / 60);
                 const seconds = Math.floor(duration % 60);
                 durationDisplay.el().innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;

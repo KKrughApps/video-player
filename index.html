@@ -10,6 +10,10 @@
         .vjs-language-menu .vjs-button { cursor: pointer; }
         .vjs-menu { display: none; position: absolute; bottom: 100%; background-color: #2B333F; border: 1px solid #121415; }
         .vjs-menu.visible { display: block; }
+        .vjs-menu-content { list-style: none; margin: 0; padding: 0; }
+        .vjs-menu-item { color: white; padding: 5px 10px; cursor: pointer; }
+        .vjs-menu-item:hover { background-color: #4e5d6c; }
+        .vjs-selected { background-color: #4e5d6c; }
     </style>
 </head>
 <body>
@@ -64,17 +68,17 @@
             }
 
             createMenu() {
-                const menu = videojs.dom.createEl('ul', {
-                    className: 'vjs-menu-content'
-                });
-                const menuComponent = new videojs.getComponent('Component')(this.player_, {}, menu);
+                const menuEl = videojs.dom.createEl('ul', { className: 'vjs-menu-content' });
+                const menu = new videojs.getComponent('Component')(this.player_, {}, menuEl);
                 videos[currentVideoIndex].languages.forEach((lang, index) => {
-                    const item = new videojs.getComponent('MenuItem')(this.player_, {
-                        label: lang.label,
-                        selectable: true,
-                        selected: lang.code === currentLang
+                    const itemEl = videojs.dom.createEl('li', {
+                        className: 'vjs-menu-item',
+                        innerHTML: lang.label
                     });
-                    item.on('click', () => {
+                    if (lang.code === currentLang) {
+                        itemEl.classList.add('vjs-selected');
+                    }
+                    itemEl.addEventListener('click', () => {
                         currentLang = lang.code;
                         audioElement.src = lang.audio;
                         audioElement.load();
@@ -82,10 +86,14 @@
                         this.player_.playbackRate(baseDuration / lang.duration);
                         this.player_.currentTime(3); // Start at 0:03
                         this.menu.el_.classList.remove('visible');
+                        // Update selected state
+                        const items = this.menu.el_.querySelectorAll('.vjs-menu-item');
+                        items.forEach(i => i.classList.remove('vjs-selected'));
+                        itemEl.classList.add('vjs-selected');
                     });
-                    menuComponent.addChild(item);
+                    menuEl.appendChild(itemEl);
                 });
-                return menuComponent;
+                return menu;
             }
         }
 

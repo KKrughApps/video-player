@@ -4,7 +4,7 @@
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
     <style>
         .vjs-language-menu, .vjs-playlist-nav { display: inline-block; }
-        .video-js { max-width: 100%; width: 800px; height: 450px; margin: 0 auto; } /* Fixed size */
+        .video-js { max-width: 100%; width: 800px; height: 450px; margin: 0 auto; }
         .vjs-playlist-nav button { font-size: 18px; padding: 5px 10px; cursor: pointer; }
         video { pointer-events: none; } /* Disable right-click */
         .vjs-language-menu .vjs-button { cursor: pointer; }
@@ -51,12 +51,14 @@
             }
 
             handleClick() {
+                if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) return;
                 const menu = this.createMenu();
                 if (this.menu) {
                     this.removeChild(this.menu);
                 }
                 this.menu = menu;
                 this.addChild(menu);
+                this.menu.el_.style.display = 'block';
             }
 
             createMenu() {

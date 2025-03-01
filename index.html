@@ -51,7 +51,7 @@
         .vjs-selected {
             background-color: #4e5d6c;
         }
-        .vjs-duration { /* Ensure Video.js doesn't override */
+        .vjs-duration {
             display: inline-block !important;
         }
     </style>
@@ -94,17 +94,24 @@
 
         player.on('play', () => audioElement.play());
         player.on('pause', () => audioElement.pause());
-        player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3); // 3s offset
+        player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3);
+
+        // Override Video.js duration to match audio
+        player.duration = function() {
+            return currentAudioDuration || baseDuration;
+        };
 
         // Update duration display
         function updateDurationDisplay(duration) {
+            currentAudioDuration = duration;
             const durationDisplay = player.controlBar.getChild('durationDisplay').el_;
             if (durationDisplay) {
-                currentAudioDuration = duration;
                 const minutes = Math.floor(duration / 60);
                 const seconds = Math.floor(duration % 60);
                 durationDisplay.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
+            // Force progress bar to reflect the new duration
+            player.trigger('durationchange');
         }
 
         // Adjust playback rate and duration

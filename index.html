@@ -33,15 +33,17 @@
         player.on('pause', () => audioElement.pause());
         player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3); // 3s offset
 
-        // Language Menu
-        videojs.registerComponent('LanguageMenu', videojs.extend(videojs.getComponent('MenuButton'), {
-            constructor: function() { 
-                this.addClass('vjs-language-menu'); 
+        // Language Menu (Updated for Video.js 8.x)
+        const LanguageMenu = videojs.getComponent('MenuButton');
+        videojs.registerComponent('LanguageMenu', videojs.extend(LanguageMenu, {
+            constructor: function(player, options) {
+                LanguageMenu.call(this, player, options);
+                this.addClass('vjs-language-menu');
             },
             createMenu: function() {
-                const menu = new videojs.Menu(this.player_, { menuButton: this });
+                const menu = new videojs.getComponent('Menu')(this.player_, { menuButton: this });
                 videos[currentVideoIndex].languages.forEach((lang, index) => {
-                    const item = new videojs.MenuItem(this.player_, {
+                    const item = new videojs.getComponent('MenuItem')(this.player_, {
                         label: lang.label,
                         selectable: true,
                         selected: lang.code === currentLang

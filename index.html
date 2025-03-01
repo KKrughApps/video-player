@@ -28,7 +28,7 @@
         .language-menu {
             display: none;
             position: absolute;
-            top: 2em; /* Open downward */
+            top: 2em;
             right: 0;
             background-color: #2B333F;
             border: 1px solid #121415;
@@ -101,6 +101,15 @@
             languageMenu.classList.toggle('visible');
         });
 
+        function updateDurationDisplay(duration) {
+            const durationDisplay = player.controlBar.getChild('durationDisplay');
+            if (durationDisplay) {
+                const minutes = Math.floor(duration / 60);
+                const seconds = Math.floor(duration % 60);
+                durationDisplay.el().innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            }
+        }
+
         function populateLanguageMenu() {
             languageMenu.innerHTML = '';
             videos[currentVideoIndex].languages.forEach((lang, index) => {
@@ -115,8 +124,10 @@
                     audioElement.src = lang.audio;
                     audioElement.load();
                     if (!player.paused()) audioElement.play();
-                    player.playbackRate(baseDuration / lang.duration);
+                    const newPlaybackRate = baseDuration / lang.duration;
+                    player.playbackRate(newPlaybackRate);
                     player.currentTime(3);
+                    updateDurationDisplay(lang.duration);
                     languageMenu.classList.remove('visible');
                     const items = languageMenu.querySelectorAll('.language-item');
                     items.forEach(i => i.classList.remove('vjs-selected'));
@@ -136,8 +147,10 @@
                 player.src(videos[0].video);
                 audioElement.src = videos[0].languages[0].audio;
                 baseDuration = videos[0].baseDuration;
-                player.playbackRate(baseDuration / videos[0].languages[0].duration);
+                const initialPlaybackRate = baseDuration / videos[0].languages[0].duration;
+                player.playbackRate(initialPlaybackRate);
                 player.currentTime(3);
+                updateDurationDisplay(videos[0].languages[0].duration);
                 populateLanguageMenu();
             })
             .catch(error => {

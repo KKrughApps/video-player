@@ -92,15 +92,7 @@
         player.on('pause', () => audioElement.pause());
         player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3); // 3s offset
 
-        // Language Menu Setup
-        const languageButton = document.querySelector('.language-button');
-        const languageMenu = document.querySelector('#languageMenu');
-
-        languageButton.addEventListener('click', () => {
-            if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) return;
-            languageMenu.classList.toggle('visible');
-        });
-
+        // Update duration display
         function updateDurationDisplay(duration) {
             const durationDisplay = player.controlBar.getChild('durationDisplay');
             if (durationDisplay) {
@@ -109,6 +101,30 @@
                 durationDisplay.el().innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
         }
+
+        // Adjust playback rate and duration
+        function adjustPlaybackForLanguage(lang) {
+            const newPlaybackRate = baseDuration / lang.duration;
+            player.playbackRate(newPlaybackRate);
+            updateDurationDisplay(lang.duration);
+            // Stop video when audio ends
+            const videoEndTime = lang.duration;
+            const checkEndInterval = setInterval(() => {
+                if (player.currentTime() >= videoEndTime) {
+                    player.pause();
+                    clearInterval(checkEndInterval);
+                }
+            }, 1000);
+        }
+
+        // Language Menu Setup
+        const languageButton = document.querySelector('.language-button');
+        const languageMenu = document.querySelector('#languageMenu');
+
+        languageButton.addEventListener('click', () => {
+            if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) return;
+            languageMenu.classList.toggle('visible');
+        });
 
         function populateLanguageMenu() {
             languageMenu.innerHTML = '';
@@ -124,10 +140,8 @@
                     audioElement.src = lang.audio;
                     audioElement.load();
                     if (!player.paused()) audioElement.play();
-                    const newPlaybackRate = baseDuration / lang.duration;
-                    player.playbackRate(newPlaybackRate);
+                    adjustPlaybackForLanguage(lang);
                     player.currentTime(3);
-                    updateDurationDisplay(lang.duration);
                     languageMenu.classList.remove('visible');
                     const items = languageMenu.querySelectorAll('.language-item');
                     items.forEach(i => i.classList.remove('vjs-selected'));
@@ -147,10 +161,8 @@
                 player.src(videos[0].video);
                 audioElement.src = videos[0].languages[0].audio;
                 baseDuration = videos[0].baseDuration;
-                const initialPlaybackRate = baseDuration / videos[0].languages[0].duration;
-                player.playbackRate(initialPlaybackRate);
+                adjustPlaybackForLanguage(videos[0].languages[0]);
                 player.currentTime(3);
-                updateDurationDisplay(videos[0].languages[0].duration);
                 populateLanguageMenu();
             })
             .catch(error => {

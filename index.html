@@ -7,8 +7,9 @@
         .video-js { max-width: 100%; width: 800px; height: 450px; margin: 0 auto; }
         .vjs-playlist-nav button { font-size: 18px; padding: 5px 10px; cursor: pointer; }
         video { pointer-events: none; } /* Disable right-click */
-        .vjs-language-menu .vjs-button { cursor: pointer; }
-        .vjs-menu { display: none; position: absolute; bottom: 100%; background-color: #2B333F; border: 1px solid #121415; }
+        .vjs-language-menu { display: inline-block !important; }
+        .vjs-language-menu .vjs-button { cursor: pointer; display: inline-block; }
+        .vjs-menu { display: none; position: absolute; bottom: 3em; background-color: #2B333F; border: 1px solid #121415; z-index: 1000; }
         .vjs-menu.visible { display: block; }
         .vjs-menu-content { list-style: none; margin: 0; padding: 0; }
         .vjs-menu-item { color: white; padding: 5px 10px; cursor: pointer; }
@@ -28,7 +29,16 @@
             width: 800,
             height: 450,
             controlBar: {
-                children: ['playToggle', 'volumePanel', 'progressControl', 'captionsButton', 'fullscreenToggle']
+                children: [
+                    'playToggle',
+                    'volumePanel',
+                    'currentTimeDisplay',
+                    'timeDivider',
+                    'durationDisplay',
+                    'progressControl',
+                    'captionsButton',
+                    'fullscreenToggle'
+                ]
             }
         });
 
@@ -47,17 +57,24 @@
             constructor(player, options) {
                 super(player, options);
                 this.addClass('vjs-language-menu');
+                console.log("LanguageMenu instantiated");
             }
 
             createEl() {
-                return videojs.dom.createEl('button', {
+                const el = videojs.dom.createEl('button', {
                     className: 'vjs-language-menu vjs-control vjs-button',
                     innerHTML: 'Language'
                 });
+                console.log("LanguageMenu button created:", el);
+                return el;
             }
 
             handleClick() {
-                if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) return;
+                console.log("LanguageMenu clicked");
+                if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) {
+                    console.log("No languages available");
+                    return;
+                }
                 const menu = this.createMenu();
                 if (this.menu) {
                     this.removeChild(this.menu);
@@ -65,9 +82,11 @@
                 this.menu = menu;
                 this.addChild(menu);
                 this.menu.el_.classList.toggle('visible');
+                console.log("Menu toggled:", this.menu.el_.classList.contains('visible'));
             }
 
             createMenu() {
+                console.log("Creating LanguageMenu");
                 const menuEl = videojs.dom.createEl('ul', { className: 'vjs-menu-content' });
                 const menu = new videojs.getComponent('Component')(this.player_, {}, menuEl);
                 videos[currentVideoIndex].languages.forEach((lang, index) => {
@@ -79,14 +98,15 @@
                         itemEl.classList.add('vjs-selected');
                     }
                     itemEl.addEventListener('click', () => {
+                        console.log("Selected language:", lang.label);
                         currentLang = lang.code;
                         audioElement.src = lang.audio;
                         audioElement.load();
                         if (!this.player_.paused()) audioElement.play();
                         this.player_.playbackRate(baseDuration / lang.duration);
-                        this.player_.currentTime(3); // Start at 0:03
+                        this.player_.duration(lang.duration);
+                        this.player_.currentTime(3);
                         this.menu.el_.classList.remove('visible');
-                        // Update selected state
                         const items = this.menu.el_.querySelectorAll('.vjs-menu-item');
                         items.forEach(i => i.classList.remove('vjs-selected'));
                         itemEl.classList.add('vjs-selected');
@@ -110,6 +130,7 @@
                 audioElement.src = videos[0].languages[0].audio;
                 baseDuration = videos[0].baseDuration;
                 player.playbackRate(baseDuration / videos[0].languages[0].duration);
+                player.duration(videos[0].languages[0].duration);
                 player.currentTime(3);
                 console.log("Adding LanguageMenu...");
                 player.controlBar.addChild('LanguageMenu', {});

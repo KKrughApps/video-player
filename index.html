@@ -8,6 +8,8 @@
         .vjs-playlist-nav button { font-size: 18px; padding: 5px 10px; cursor: pointer; }
         video { pointer-events: none; } /* Disable right-click */
         .vjs-language-menu .vjs-button { cursor: pointer; }
+        .vjs-menu { display: none; position: absolute; bottom: 100%; background-color: #2B333F; border: 1px solid #121415; }
+        .vjs-menu.visible { display: block; }
     </style>
 </head>
 <body>
@@ -58,11 +60,14 @@
                 }
                 this.menu = menu;
                 this.addChild(menu);
-                this.menu.el_.style.display = 'block';
+                this.menu.el_.classList.toggle('visible');
             }
 
             createMenu() {
-                const menu = new videojs.getComponent('Menu')(this.player_, { menuButton: this });
+                const menu = videojs.dom.createEl('ul', {
+                    className: 'vjs-menu-content'
+                });
+                const menuComponent = new videojs.getComponent('Component')(this.player_, {}, menu);
                 videos[currentVideoIndex].languages.forEach((lang, index) => {
                     const item = new videojs.getComponent('MenuItem')(this.player_, {
                         label: lang.label,
@@ -76,10 +81,11 @@
                         if (!this.player_.paused()) audioElement.play();
                         this.player_.playbackRate(baseDuration / lang.duration);
                         this.player_.currentTime(3); // Start at 0:03
+                        this.menu.el_.classList.remove('visible');
                     });
-                    menu.addChild(item);
+                    menuComponent.addChild(item);
                 });
-                return menu;
+                return menuComponent;
             }
         }
 

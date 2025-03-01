@@ -51,6 +51,9 @@
         .vjs-selected {
             background-color: #4e5d6c;
         }
+        .vjs-duration { /* Ensure Video.js doesn't override */
+            display: inline-block !important;
+        }
     </style>
 </head>
 <body>
@@ -95,12 +98,12 @@
 
         // Update duration display
         function updateDurationDisplay(duration) {
-            const durationDisplay = player.controlBar.getChild('durationDisplay');
+            const durationDisplay = player.controlBar.getChild('durationDisplay').el_;
             if (durationDisplay) {
                 currentAudioDuration = duration;
                 const minutes = Math.floor(duration / 60);
                 const seconds = Math.floor(duration % 60);
-                durationDisplay.el().innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                durationDisplay.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
         }
 

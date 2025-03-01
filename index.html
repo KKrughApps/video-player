@@ -7,58 +7,18 @@
         .video-js { max-width: 100%; width: 800px; height: 450px; margin: 0 auto; }
         .vjs-playlist-nav button { font-size: 18px; padding: 5px 10px; cursor: pointer; }
         video { pointer-events: none; } /* Disable right-click */
-        .language-dropdown {
-            position: relative;
-            display: inline-block;
-            vertical-align: middle;
-            margin-left: 10px;
-        }
-        .language-button {
-            background-color: #2B333F;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 3px;
-        }
-        .language-button:hover {
-            background-color: #4e5d6c;
-        }
-        .language-menu {
-            display: none;
-            position: absolute;
-            bottom: 2em;
-            background-color: #2B333F;
-            border: 1px solid #121415;
-            z-index: 1000;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-        .language-menu.visible {
-            display: block;
-        }
-        .language-item {
-            color: white;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-        .language-item:hover {
-            background-color: #4e5d6c;
-        }
-        .vjs-selected {
-            background-color: #4e5d6c;
-        }
+        .vjs-language-menu .vjs-button { cursor: pointer; display: inline-block; }
+        .vjs-language-menu .vjs-menu { display: none; position: absolute; bottom: 2em; right: 0; background-color: #2B333F; border: 1px solid #121415; z-index: 1000; }
+        .vjs-language-menu .vjs-menu.visible { display: block; }
+        .vjs-language-menu .vjs-menu-content { list-style: none; margin: 0; padding: 0; }
+        .vjs-language-menu .vjs-menu-item { color: white; padding: 5px 10px; cursor: pointer; }
+        .vjs-language-menu .vjs-menu-item:hover { background-color: #4e5d6c; }
+        .vjs-language-menu .vjs-selected { background-color: #4e5d6c; }
     </style>
 </head>
 <body>
     <div class="vjs-video-container">
         <video id="videoPlayer" class="video-js vjs-default-skin" controls></video>
-        <div class="language-dropdown">
-            <button class="language-button">Language</button>
-            <ul id="languageMenu" class="language-menu"></ul>
-        </div>
     </div>
 
     <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
@@ -76,7 +36,8 @@
                     'durationDisplay',
                     'progressControl',
                     'captionsButton',
-                    'fullscreenToggle'
+                    'fullscreenToggle',
+                    'LanguageMenu' // Add to control bar
                 ]
             }
         });
@@ -91,40 +52,61 @@
         player.on('pause', () => audioElement.pause());
         player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3); // 3s offset
 
-        // Language Menu Setup
-        const languageButton = document.querySelector('.language-button');
-        const languageMenu = document.querySelector('#languageMenu');
+        // Language Menu (Video.js 8.x compatible)
+        class LanguageMenu extends videojs.getComponent('MenuButton') {
+            constructor(player, options) {
+                super(player, options);
+                this.addClass('vjs-language-menu');
+            }
 
-        languageButton.addEventListener('click', () => {
-            if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) return;
-            languageMenu.classList.toggle('visible');
-        });
-
-        function populateLanguageMenu() {
-            languageMenu.innerHTML = '';
-            videos[currentVideoIndex].languages.forEach((lang, index) => {
-                const itemEl = document.createElement('li');
-                itemEl.className = 'language-item';
-                itemEl.innerHTML = lang.label;
-                if (lang.code === currentLang) {
-                    itemEl.classList.add('vjs-selected');
-                }
-                itemEl.addEventListener('click', () => {
-                    currentLang = lang.code;
-                    audioElement.src = lang.audio;
-                    audioElement.load();
-                    if (!player.paused()) audioElement.play();
-                    player.playbackRate(baseDuration / lang.duration);
-                    player.duration(lang.duration);
-                    player.currentTime(3);
-                    languageMenu.classList.remove('visible');
-                    const items = languageMenu.querySelectorAll('.language-item');
-                    items.forEach(i => i.classList.remove('vjs-selected'));
-                    itemEl.classList.add('vjs-selected');
+            createEl() {
+                return videojs.dom.createEl('button', {
+                    className: 'vjs-language-menu vjs-control vjs-button',
+                    innerHTML: 'Language'
                 });
-                languageMenu.appendChild(itemEl);
-            });
+            }
+
+            handleClick() {
+                if (!videos[currentVideoIndex] || !videos[currentVideoIndex].languages) return;
+                const menu = this.createMenu();
+                if (this.menu) {
+                    this.removeChild(this.menu);
+                }
+                this.menu = menu;
+                this.addChild(menu);
+                this.menu.el_.classList.toggle('visible');
+            }
+
+            createMenu() {
+                const menuEl = videojs.dom.createEl('ul', { className: 'vjs-menu-content' });
+                const menu = new videojs.getComponent('Component')(this.player_, {}, menuEl);
+                videos[currentVideoIndex].languages.forEach((lang, index) => {
+                    const itemEl = videojs.dom.createEl('li', {
+                        className: 'vjs-menu-item',
+                        innerHTML: lang.label
+                    });
+                    if (lang.code === currentLang) {
+                        itemEl.classList.add('vjs-selected');
+                    }
+                    itemEl.addEventListener('click', () => {
+                        currentLang = lang.code;
+                        audioElement.src = lang.audio;
+                        audioElement.load();
+                        if (!this.player_.paused()) audioElement.play();
+                        this.player_.playbackRate(baseDuration / lang.duration);
+                        this.player_.currentTime(3);
+                        this.menu.el_.classList.remove('visible');
+                        const items = this.menu.el_.querySelectorAll('.vjs-menu-item');
+                        items.forEach(i => i.classList.remove('vjs-selected'));
+                        itemEl.classList.add('vjs-selected');
+                    });
+                    menuEl.appendChild(itemEl);
+                });
+                return menu;
+            }
         }
+
+        videojs.registerComponent('LanguageMenu', LanguageMenu);
 
         // Fetch videos and initialize
         console.log("Fetching API...");
@@ -137,9 +119,7 @@
                 audioElement.src = videos[0].languages[0].audio;
                 baseDuration = videos[0].baseDuration;
                 player.playbackRate(baseDuration / videos[0].languages[0].duration);
-                player.duration(videos[0].languages[0].duration);
                 player.currentTime(3);
-                populateLanguageMenu();
             })
             .catch(error => {
                 console.error("Fetch error:", error);

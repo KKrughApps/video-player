@@ -34,24 +34,30 @@
         player.on('seeking', () => audioElement.currentTime = player.currentTime() - 3); // 3s offset
 
         // Language Menu (Video.js 8.x compatible)
-        videojs.registerComponent('LanguageMenu', {
-            name: 'LanguageMenu',
+        class LanguageMenu extends videojs.getComponent('Component') {
+            constructor(player, options) {
+                super(player, options);
+                this.addClass('vjs-language-menu');
+            }
+
             createEl() {
                 return videojs.dom.createEl('button', {
-                    className: 'vjs-language-menu vjs-control vjs-button'
+                    className: 'vjs-language-menu vjs-control vjs-button',
+                    innerHTML: 'Language'
                 });
-            },
-            buildCSSClass() {
-                return 'vjs-language-menu vjs-button';
-            },
+            }
+
             handleClick() {
                 const menu = this.createMenu();
+                if (this.menu) {
+                    this.removeChild(this.menu);
+                }
                 this.menu = menu;
-                this.items = menu.children();
-                this.showMenu();
-            },
+                this.addChild(menu);
+            }
+
             createMenu() {
-                const menu = new videojs.getComponent('Menu')(this.player_, { menuButton: this });
+                const menu = new videojs.getComponent('Menu')(this.player_);
                 videos[currentVideoIndex].languages.forEach((lang, index) => {
                     const item = new videojs.getComponent('MenuItem')(this.player_, {
                         label: lang.label,
@@ -66,11 +72,13 @@
                         this.player_.playbackRate(baseDuration / lang.duration);
                         this.player_.currentTime(3); // Start at 0:03
                     });
-                    menu.addItem(item);
+                    menu.addChild(item);
                 });
                 return menu;
             }
-        });
+        }
+
+        videojs.registerComponent('LanguageMenu', LanguageMenu);
 
         // Fetch videos and initialize
         console.log("Fetching API...");

@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
@@ -34,7 +35,9 @@
 
         // Language Menu
         videojs.registerComponent('LanguageMenu', videojs.extend(videojs.getComponent('MenuButton'), {
-            constructor: function() { this.addClass('vjs-language-menu'); },
+            constructor: function() { 
+                this.addClass('vjs-language-menu'); 
+            },
             createMenu: function() {
                 const menu = new videojs.Menu(this.player_, { menuButton: this });
                 videos[currentVideoIndex].languages.forEach((lang, index) => {
@@ -58,9 +61,11 @@
         }));
 
         // Fetch videos and initialize
+        console.log("Fetching API...");
         fetch('https://video-api.keith-9d4.workers.dev')
             .then(res => res.json())
             .then(data => {
+                console.log("API response:", data);
                 videos = data.videos;
                 player.src(videos[0].video);
                 audioElement.src = videos[0].languages[0].audio;
@@ -68,6 +73,9 @@
                 player.playbackRate(baseDuration / videos[0].languages[0].duration);
                 player.currentTime(3);
                 player.controlBar.addChild('LanguageMenu', {});
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
             });
 
         // Disable right-click on video

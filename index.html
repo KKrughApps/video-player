@@ -91,9 +91,12 @@
         let videos = [];
         const BASE_DURATION = 102; // Base video duration (English) in seconds
         const BASE_FPS = 24; // Base frame rate
-        const TOTAL_FRAMES = BASE_DURATION * BASE_FPS; // Total frames in the video
+        const ORIGINAL_DURATION = 140; // Original video duration (before trimming)
+        const TOTAL_FRAMES = ORIGINAL_DURATION * BASE_FPS; // Total frames in the original video
         const VOICEOVER_START_TIME = 2; // Voiceover starts at 2 seconds
         let currentAudioDuration = 0; // Store current audio duration
+        let checkEndInterval = null; // Store interval for cleanup
+        let isAtEnd = false; // Track if video has reached the end
 
         // Override Video.js duration to match audio
         player.duration = function() {
@@ -114,15 +117,33 @@
 
         // Adjust playback rate to align video end with audio end
         function adjustPlaybackForLanguage(lang) {
-            // Calculate the new fps to play all frames over the audio duration
+            // Calculate the new fps to play all frames (from the original 140s video) over the audio duration
             const newFps = TOTAL_FRAMES / lang.duration;
             const newPlaybackRate = newFps / BASE_FPS;
             player.playbackRate(newPlaybackRate);
             updateDurationDisplay(lang.duration);
+            // Stop video when audio ends
+            if (checkEndInterval) {
+                clearInterval(checkEndInterval);
+            }
+            const adjustedEndTime = (BASE_DURATION / ORIGINAL_DURATION) * lang.duration;
+            isAtEnd = false;
+            checkEndInterval = setInterval(() => {
+                if (player.currentTime() >= adjustedEndTime) {
+                    player.pause();
+                    player.currentTime(adjustedEndTime); // Ensure video stays at end
+                    isAtEnd = true;
+                    clearInterval(checkEndInterval);
+                }
+            }, 100);
         }
 
         // Synchronize audio with video
         player.on('play', () => {
+            if (isAtEnd) {
+                player.currentTime(0); // Restart video if at end
+                isAtEnd = false;
+            }
             const videoTime = player.currentTime();
             if (videoTime < VOICEOVER_START_TIME) {
                 audioElement.currentTime = 0; // Audio starts at 0 until video reaches 2s
@@ -139,6 +160,7 @@
             } else {
                 audioElement.currentTime = videoTime - VOICEOVER_START_TIME;
             }
+            isAtEnd = false; // Reset end state on seeking
         });
 
         // Language Menu Setup

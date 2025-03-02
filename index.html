@@ -95,6 +95,7 @@
         const VOICEOVER_START_TIME = 2; // Voiceover starts at 2 seconds
         let currentAudioDuration = 0; // Store current audio duration
         let checkEndInterval = null; // Store interval for cleanup
+        let playbackInterval = null; // Store interval for custom playback
         let isAtEnd = false; // Track if video has reached the end
 
         // Override Video.js duration to match audio
@@ -116,19 +117,22 @@
 
         // Adjust playback rate to align video end with audio end
         function adjustPlaybackForLanguage(lang) {
-            // Play all frames over the voiceover duration
+            // Calculate the new fps to play all frames over the voiceover duration
             const newFps = TOTAL_FRAMES / lang.duration;
             const newPlaybackRate = newFps / BASE_FPS;
             console.log("Calculated Playback Rate for " + lang.label + ":", newPlaybackRate);
-            player.playbackRate(newPlaybackRate);
-            console.log("Applied Playback Rate for " + lang.label + ":", player.playbackRate());
             updateDurationDisplay(lang.duration);
             // Allow voiceover to continue until its full duration
             if (checkEndInterval) {
                 clearInterval(checkEndInterval);
             }
+            if (playbackInterval) {
+                clearInterval(playbackInterval);
+            }
             const videoEndTime = lang.duration; // Video stops at voiceover duration
             const audioEndTime = lang.duration; // Audio stops at its duration
+            const frameInterval = 1000 / newFps; // Time per frame in milliseconds
+            let virtualTime = 0; // Virtual time to simulate playback rate
             isAtEnd = false;
             checkEndInterval = setInterval(() => {
                 if (player.currentTime() >= videoEndTime) {
@@ -139,8 +143,16 @@
                 if (audioElement.currentTime >= audioEndTime) {
                     audioElement.pause();
                     clearInterval(checkEndInterval);
+                    clearInterval(playbackInterval);
                 }
             }, 100);
+            // Custom playback loop to simulate playback rate
+            playbackInterval = setInterval(() => {
+                if (!player.paused() && !isAtEnd) {
+                    virtualTime += frameInterval / 1000; // Increment virtual time
+                    player.currentTime(virtualTime); // Set video time based on virtual time
+                }
+            }, frameInterval);
         }
 
         // Synchronize audio with video
@@ -149,6 +161,7 @@
                 player.currentTime(0); // Restart video if at end
                 audioElement.currentTime = 0; // Restart audio if at end
                 isAtEnd = false;
+                adjustPlaybackForLanguage({ label: currentLang, duration: currentAudioDuration, audio: audioElement.src });
             }
             const videoTime = player.currentTime();
             if (videoTime < VOICEOVER_START_TIME) {

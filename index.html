@@ -125,7 +125,7 @@
             if (checkEndInterval) {
                 clearInterval(checkEndInterval);
             }
-            const videoEndTime = BASE_DURATION; // Video stops at its duration
+            const videoEndTime = Math.min(BASE_DURATION, lang.duration); // Video stops at the shorter duration
             const audioEndTime = lang.duration; // Audio stops at its duration
             isAtEnd = false;
             checkEndInterval = setInterval(() => {

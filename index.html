@@ -116,9 +116,8 @@
 
         // Adjust playback rate to align video end with audio end
         function adjustPlaybackForLanguage(lang) {
-            // Calculate the new fps to play all frames over the audio duration
-            const playbackDuration = Math.min(BASE_DURATION, lang.duration); // Use the shorter duration for playback
-            const newFps = TOTAL_FRAMES / playbackDuration;
+            // Play all frames over the voiceover duration
+            const newFps = TOTAL_FRAMES / lang.duration;
             const newPlaybackRate = newFps / BASE_FPS;
             player.playbackRate(newPlaybackRate);
             updateDurationDisplay(lang.duration);

@@ -116,17 +116,18 @@
             const newPlaybackRate = baseDuration / lang.duration;
             player.playbackRate(newPlaybackRate);
             updateDurationDisplay(lang.duration);
-            // Stop video when audio ends
+            // Stop video when audio ends and prevent further playback
             if (checkEndInterval) {
-                clearInterval(checkEndInterval); // Clear previous interval
+                clearInterval(checkEndInterval);
             }
             const videoEndTime = lang.duration;
             checkEndInterval = setInterval(() => {
                 if (player.currentTime() >= videoEndTime) {
                     player.pause();
+                    player.currentTime(videoEndTime); // Ensure video stays at end
                     clearInterval(checkEndInterval);
                 }
-            }, 1000);
+            }, 100);
         }
 
         // Synchronize audio with video

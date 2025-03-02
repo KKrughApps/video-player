@@ -89,9 +89,9 @@
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language
         let videos = [];
-        const BASE_DURATION = 102; // Current video duration (trimmed to English)
+        const BASE_DURATION = 140; // Full video duration
         const BASE_FPS = 24; // Base frame rate
-        const TOTAL_FRAMES = BASE_DURATION * BASE_FPS; // Total frames in the trimmed video
+        const TOTAL_FRAMES = BASE_DURATION * BASE_FPS; // Total frames in the full video
         const VOICEOVER_START_TIME = 2; // Voiceover starts at 2 seconds
         let currentAudioDuration = 0; // Store current audio duration
         let checkEndInterval = null; // Store interval for cleanup
@@ -119,14 +119,15 @@
             // Play all frames over the voiceover duration
             const newFps = TOTAL_FRAMES / lang.duration;
             const newPlaybackRate = newFps / BASE_FPS;
+            console.log("Calculated Playback Rate for " + lang.label + ":", newPlaybackRate);
             player.playbackRate(newPlaybackRate);
-            console.log("Playback Rate for " + lang.label + ":", newPlaybackRate); // Debug log
+            console.log("Applied Playback Rate for " + lang.label + ":", player.playbackRate());
             updateDurationDisplay(lang.duration);
             // Allow voiceover to continue until its full duration
             if (checkEndInterval) {
                 clearInterval(checkEndInterval);
             }
-            const videoEndTime = BASE_DURATION; // Video stops at its duration
+            const videoEndTime = lang.duration; // Video stops at voiceover duration
             const audioEndTime = lang.duration; // Audio stops at its duration
             isAtEnd = false;
             checkEndInterval = setInterval(() => {

@@ -89,7 +89,7 @@
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language
         let videos = [];
-        let baseDuration = 140;
+        let baseDuration = 140; // Video duration at normal speed
         let currentAudioDuration = 0; // Store current audio duration
         let checkEndInterval = null; // Store interval for cleanup
 
@@ -110,7 +110,7 @@
             player.trigger('durationchange'); // Force progress bar update
         }
 
-        // Adjust playback rate and duration
+        // Adjust playback rate to align video end with audio end
         function adjustPlaybackForLanguage(lang) {
             const newPlaybackRate = baseDuration / lang.duration;
             player.playbackRate(newPlaybackRate);

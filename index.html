@@ -89,14 +89,15 @@
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language
         let videos = [];
-        let baseDuration = 140; // Video duration at normal speed
-        let currentAudioDuration = 0; // Store current audio duration
-        let checkEndInterval = null; // Store interval for cleanup
+        const BASE_DURATION = 102; // Base video duration (English) in seconds
+        const BASE_FPS = 24; // Base frame rate
+        const TOTAL_FRAMES = BASE_DURATION * BASE_FPS; // Total frames in the video
         const VOICEOVER_START_TIME = 2; // Voiceover starts at 2 seconds
+        let currentAudioDuration = 0; // Store current audio duration
 
         // Override Video.js duration to match audio
         player.duration = function() {
-            return currentAudioDuration || baseDuration;
+            return currentAudioDuration || BASE_DURATION;
         };
 
         // Update duration display
@@ -113,21 +114,11 @@
 
         // Adjust playback rate to align video end with audio end
         function adjustPlaybackForLanguage(lang) {
-            const newPlaybackRate = baseDuration / lang.duration;
+            // Calculate the new fps to play all frames over the audio duration
+            const newFps = TOTAL_FRAMES / lang.duration;
+            const newPlaybackRate = newFps / BASE_FPS;
             player.playbackRate(newPlaybackRate);
             updateDurationDisplay(lang.duration);
-            // Stop video when audio ends and prevent further playback
-            if (checkEndInterval) {
-                clearInterval(checkEndInterval);
-            }
-            const videoEndTime = lang.duration;
-            checkEndInterval = setInterval(() => {
-                if (player.currentTime() >= videoEndTime) {
-                    player.pause();
-                    player.currentTime(videoEndTime); // Ensure video stays at end
-                    clearInterval(checkEndInterval);
-                }
-            }, 100);
         }
 
         // Synchronize audio with video
@@ -193,7 +184,6 @@
                 videos = data.videos;
                 player.src(videos[0].video);
                 audioElement.src = videos[0].languages[0].audio;
-                baseDuration = videos[0].baseDuration;
                 adjustPlaybackForLanguage(videos[0].languages[0]);
                 player.currentTime(0); // Start video at 0
                 populateLanguageMenu();

@@ -92,6 +92,7 @@
         let baseDuration = 140; // Video duration at normal speed
         let currentAudioDuration = 0; // Store current audio duration
         let checkEndInterval = null; // Store interval for cleanup
+        const VOICEOVER_START_TIME = 2; // Voiceover starts at 2 seconds
 
         // Override Video.js duration to match audio
         player.duration = function() {
@@ -130,19 +131,21 @@
 
         // Synchronize audio with video
         player.on('play', () => {
-            if (player.currentTime() < 3) {
-                audioElement.currentTime = 0; // Audio starts at 0 when video starts
+            const videoTime = player.currentTime();
+            if (videoTime < VOICEOVER_START_TIME) {
+                audioElement.currentTime = 0; // Audio starts at 0 until video reaches 2s
             } else {
-                audioElement.currentTime = player.currentTime() - 3; // Audio starts 3s behind video
+                audioElement.currentTime = videoTime - VOICEOVER_START_TIME; // Audio starts 2s behind video
             }
             audioElement.play();
         });
         player.on('pause', () => audioElement.pause());
         player.on('seeking', () => {
-            if (player.currentTime() < 3) {
+            const videoTime = player.currentTime();
+            if (videoTime < VOICEOVER_START_TIME) {
                 audioElement.currentTime = 0;
             } else {
-                audioElement.currentTime = player.currentTime() - 3;
+                audioElement.currentTime = videoTime - VOICEOVER_START_TIME;
             }
         });
 

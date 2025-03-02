@@ -120,17 +120,19 @@
             const newFps = TOTAL_FRAMES / lang.duration;
             const newPlaybackRate = newFps / BASE_FPS;
             player.playbackRate(newPlaybackRate);
+            console.log("Playback Rate for " + lang.label + ":", newPlaybackRate); // Debug log
             updateDurationDisplay(lang.duration);
             // Allow voiceover to continue until its full duration
             if (checkEndInterval) {
                 clearInterval(checkEndInterval);
             }
-            const videoEndTime = Math.min(BASE_DURATION, lang.duration); // Video stops at the shorter duration
+            const videoEndTime = BASE_DURATION; // Video stops at its duration
             const audioEndTime = lang.duration; // Audio stops at its duration
             isAtEnd = false;
             checkEndInterval = setInterval(() => {
                 if (player.currentTime() >= videoEndTime) {
                     player.pause();
+                    player.currentTime(videoEndTime); // Ensure video stays at end
                     isAtEnd = true;
                 }
                 if (audioElement.currentTime >= audioEndTime) {

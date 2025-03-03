@@ -16,6 +16,7 @@
             max-height: 100vh;
             margin: 0 auto;
             padding-bottom: 50px; /* Add padding to prevent control bar overlap */
+            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
         }
         .vjs-video-container {
             position: relative;
@@ -23,6 +24,7 @@
             max-width: 100%;
             margin: 0 auto;
             aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
+            overflow: hidden; /* Remove vertical scrollbar */
         }
         video {
             width: 100%;
@@ -39,9 +41,10 @@
             background-color: #D3D3D3; /* Light gray background */
             color: white;
             border: none;
-            padding: 8px 15px; /* Larger padding */
+            padding: 8px 15px;
             cursor: pointer;
-            font-size: 16px; /* Larger font size */
+            font-size: 16px;
+            font-family: Arial, sans-serif; /* Set font */
             border-radius: 5px;
         }
         .language-button:hover {
@@ -52,8 +55,8 @@
             position: absolute;
             top: 100%;
             right: 0;
-            background-color: #2B333F;
-            border: 1px solid #121415;
+            background-color: #D3D3D3; /* Light gray background */
+            border: 1px solid #B0B0B0;
             z-index: 1000;
             list-style: none;
             margin: 0;
@@ -66,21 +69,23 @@
             color: white;
             padding: 5px 10px;
             cursor: pointer;
+            font-family: Arial, sans-serif; /* Match font to Language button */
         }
         .language-item:hover {
-            background-color: #4e5d6c;
+            background-color: #B0B0B0;
         }
         .vjs-selected {
-            background-color: #4e5d6c;
+            background-color: #B0B0B0;
         }
         .vjs-duration {
             display: inline-block !important;
         }
         .vjs-big-play-button {
-            background-color: #D3D3D3 !important; /* Match play button to language button */
+            background-color: #D3D3D3 !important; /* Light gray */
+            opacity: 0.9 !important; /* Slightly transparent */
         }
-        .vjs-icon-picture-in-picture-enter, .vjs-icon-picture-in-picture-exit {
-            display: none !important; /* Hide Picture-in-Picture icon */
+        .vjs-control-bar {
+            background-color: #D3D3D3 !important; /* Light gray */
         }
     </style>
 </head>
@@ -108,10 +113,17 @@
                     'durationDisplay',
                     'progressControl',
                     'captionsButton',
-                    'fullscreenToggle' // Keep fullscreen, PiP is removed via CSS
+                    'fullscreenToggle' // Keep fullscreen, PiP removed below
                 ]
             }
         });
+
+        // Disable Picture-in-Picture completely
+        player.pipButton = undefined;
+        if (player.tech_) {
+            player.tech_.off('dblclick');
+            player.tech_.el_.disablePictureInPicture = true;
+        }
 
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language

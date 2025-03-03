@@ -58,7 +58,7 @@
 </head>
 <body>
     <div class="vjs-video-container">
-        <video id="videoPlayer" class="video-js vjs-default-skin" controls></video>
+        <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto"></video>
         <div class="language-dropdown">
             <button class="language-button">Language</button>
             <ul id="languageMenu" class="language-menu"></ul>
@@ -85,26 +85,13 @@
             }
         });
 
-        let audioElement = new Audio();
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language
         let videos = [];
-        const BASE_DURATION = 140; // Full video duration
-        const BASE_FPS = 24; // Base frame rate
-        const TOTAL_FRAMES = BASE_DURATION * BASE_FPS; // Total frames in the full video
-        const VOICEOVER_START_TIME = 2; // Voiceover starts at 2 seconds
-        let currentAudioDuration = 0; // Store current audio duration
-        let checkEndInterval = null; // Store interval for cleanup
         let isAtEnd = false; // Track if video has reached the end
-
-        // Override Video.js duration to match audio
-        player.duration = function() {
-            return currentAudioDuration || BASE_DURATION;
-        };
 
         // Update duration display
         function updateDurationDisplay(duration) {
-            currentAudioDuration = duration;
             const durationDisplay = player.controlBar.getChild('durationDisplay').el_;
             if (durationDisplay) {
                 const minutes = Math.floor(duration / 60);
@@ -114,34 +101,15 @@
             player.trigger('durationchange'); // Force progress bar update
         }
 
-        // Adjust playback rate to align video end with audio end
+        // Set video source for the selected language
         function adjustPlaybackForLanguage(lang) {
-            const newFps = TOTAL_FRAMES / lang.duration;
-            const newPlaybackRate = newFps / BASE_FPS;
-            console.log("Calculated Playback Rate for " + lang.label + ":", newPlaybackRate);
-            player.playbackRate(newPlaybackRate);
-            console.log("Applied Playback Rate for " + lang.label + ":", player.playbackRate());
+            player.src(lang.video);
             updateDurationDisplay(lang.duration);
-            if (checkEndInterval) {
-                clearInterval(checkEndInterval);
-            }
-            const videoEndTime = lang.duration;
-            const audioEndTime = lang.duration;
+            player.currentTime(0);
             isAtEnd = false;
-            checkEndInterval = setInterval(() => {
-                if (player.currentTime() >= videoEndTime) {
-                    player.pause();
-                    player.currentTime(videoEndTime);
-                    isAtEnd = true;
-                }
-                if (audioElement.currentTime >= audioEndTime) {
-                    audioElement.pause();
-                    clearInterval(checkEndInterval);
-                }
-            }, 100);
         }
 
-        // Synchronize audio with video
+        // Handle play and seeking events
         player.on('loadedmetadata', () => {
             console.log("Video loaded metadata. Duration:", player.duration());
         });
@@ -152,32 +120,13 @@
             console.error("Video error:", player.error());
         });
         player.on('play', () => {
-            console.log("Play event triggered. Current playback rate:", player.playbackRate());
+            console.log("Play event triggered.");
             if (isAtEnd) {
                 player.currentTime(0);
-                audioElement.currentTime = 0;
                 isAtEnd = false;
             }
-            const videoTime = player.currentTime();
-            if (videoTime < VOICEOVER_START_TIME) {
-                audioElement.currentTime = 0;
-            } else {
-                audioElement.currentTime = videoTime - VOICEOVER_START_TIME;
-            }
-            audioElement.play().catch(error => {
-                console.error("Audio playback error:", error);
-            });
-        });
-        player.on('pause', () => {
-            audioElement.pause();
         });
         player.on('seeking', () => {
-            const videoTime = player.currentTime();
-            if (videoTime < VOICEOVER_START_TIME) {
-                audioElement.currentTime = 0;
-            } else {
-                audioElement.currentTime = videoTime - VOICEOVER_START_TIME;
-            }
             isAtEnd = false;
         });
 
@@ -201,11 +150,7 @@
                 }
                 itemEl.addEventListener('click', () => {
                     currentLang = lang.code;
-                    audioElement.src = lang.audio;
-                    audioElement.load();
-                    if (!player.paused()) audioElement.play();
                     adjustPlaybackForLanguage(lang);
-                    player.currentTime(0);
                     languageMenu.classList.remove('visible');
                     const items = languageMenu.querySelectorAll('.language-item');
                     items.forEach(i => i.classList.remove('vjs-selected'));
@@ -222,10 +167,7 @@
             .then(data => {
                 console.log("API response:", data);
                 videos = data.videos;
-                player.src(videos[0].video);
-                audioElement.src = videos[0].languages[0].audio;
                 adjustPlaybackForLanguage(videos[0].languages[0]);
-                player.currentTime(0);
                 populateLanguageMenu();
             })
             .catch(error => {

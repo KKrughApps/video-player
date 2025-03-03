@@ -8,6 +8,10 @@
     <meta property="og:url" content="https://video-player-eim.pages.dev">
     <meta property="og:type" content="video.other">
     <style>
+        body {
+            margin: 0; /* Remove default body margin */
+            overflow: hidden; /* Prevent scrollbars on body */
+        }
         .vjs-language-menu, .vjs-playlist-nav { display: inline-block; }
         .video-js {
             width: 1920px;
@@ -15,13 +19,16 @@
             max-width: 100%;
             max-height: 100vh;
             margin: 0 auto;
-            padding-bottom: 50px; /* Add padding to prevent control bar overlap */
+            padding-bottom: 70px; /* Increase padding for control bar */
             aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
+            border-radius: 10px; /* Add rounded corners */
         }
         .vjs-video-container {
             position: relative;
             width: 1920px;
+            height: 1920px; /* Explicitly set height */
             max-width: 100%;
+            max-height: 100vh;
             margin: 0 auto;
             aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
             overflow: hidden; /* Remove vertical scrollbar */
@@ -30,6 +37,8 @@
             width: 100%;
             height: 100%;
             object-fit: fill; /* Ensure video fills the player area */
+            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio on video element */
+            border-radius: 10px; /* Match rounded corners */
         }
         .language-dropdown {
             position: absolute;
@@ -44,18 +53,18 @@
             padding: 8px 15px;
             cursor: pointer;
             font-size: 16px;
-            font-family: Arial, sans-serif; /* Set font */
+            font-family: Arial, sans-serif;
             border-radius: 5px;
         }
         .language-button:hover {
-            background-color: #B0B0B0; /* Slightly darker gray on hover */
+            background-color: #B0B0B0;
         }
         .language-menu {
             display: none;
             position: absolute;
             top: 100%;
             right: 0;
-            background-color: #D3D3D3; /* Light gray background */
+            background-color: #D3D3D3;
             border: 1px solid #B0B0B0;
             z-index: 1000;
             list-style: none;
@@ -69,7 +78,7 @@
             color: white;
             padding: 5px 10px;
             cursor: pointer;
-            font-family: Arial, sans-serif; /* Match font to Language button */
+            font-family: Arial, sans-serif;
         }
         .language-item:hover {
             background-color: #B0B0B0;
@@ -81,11 +90,22 @@
             display: inline-block !important;
         }
         .vjs-big-play-button {
-            background-color: #D3D3D3 !important; /* Light gray */
+            background-color: #162C2A !important; /* Black for play button */
             opacity: 0.9 !important; /* Slightly transparent */
+            border-radius: 50% !important; /* Round play button */
+        }
+        .vjs-big-play-button .vjs-icon-placeholder:before {
+            color: #FFFFFF !important; /* White triangle */
         }
         .vjs-control-bar {
-            background-color: #D3D3D3 !important; /* Light gray */
+            background-color: #484848 !important; /* Semi-transparent black */
+            border-bottom-left-radius: 10px !important; /* Match rounded corners */
+            border-bottom-right-radius: 10px !important;
+        }
+        .vjs-fullscreen .video-js {
+            width: 100% !important;
+            height: 100% !important;
+            aspect-ratio: 1 / 1 !important; /* Maintain 1:1 ratio in fullscreen */
         }
     </style>
 </head>
@@ -113,7 +133,7 @@
                     'durationDisplay',
                     'progressControl',
                     'captionsButton',
-                    'fullscreenToggle' // Keep fullscreen, PiP removed below
+                    'fullscreenToggle'
                 ]
             }
         });

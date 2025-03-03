@@ -21,7 +21,7 @@
             margin: 0 auto;
             padding-bottom: 70px; /* Padding for control bar */
             aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
-            border-radius: 20px; /* Increase corner radius */
+            border-radius: 20px; /* Corner radius */
             display: block; /* Ensure block display for proper sizing */
             background-color: transparent; /* Prevent rendering artifacts */
         }
@@ -96,18 +96,21 @@
             background-color: #162C2A !important;
             opacity: 0.9 !important;
             border-radius: 50% !important; /* Ensure circular shape */
-            width: 100px !important; /* Equal width and height */
-            height: 100px !important;
+            width: 120px !important; /* Larger size to match Carrd */
+            height: 120px !important;
             border: none !important; /* Remove white stroke */
-            line-height: 100px !important; /* Center the triangle */
+            line-height: 120px !important; /* Center the triangle */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
             color: #FFFFFF !important; /* White triangle */
+            font-size: 60px !important; /* Larger triangle to match Carrd */
         }
         .vjs-control-bar {
             background-color: #484848 !important;
-            border-bottom-left-radius: 20px !important;
-            border-bottom-right-radius: 20px !important;
+            border-bottom-left-radius: 10px !important; /* Smaller radius to match Carrd */
+            border-bottom-right-radius: 10px !important;
+            height: 50px !important; /* Increase height to match Carrd */
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -118,7 +121,7 @@
 </head>
 <body>
     <div class="vjs-video-container">
-        <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="auto" playsinline></video>
+        <video id="videoPlayer" class="video-js vjs-default-skin" controls preload="metadata" playsinline poster="https://pub-d5e42b8def5e4bd6a6319ce46bf101dd.r2.dev/patient_education_1_en_thumbnail.jpg"></video>
         <div class="language-dropdown">
             <button class="language-button">Language</button>
             <ul id="languageMenu" class="language-menu"></ul>

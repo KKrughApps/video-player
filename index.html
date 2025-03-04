@@ -25,6 +25,8 @@
             display: block; /* Ensure block display for proper sizing */
             background-color: transparent; /* Prevent rendering artifacts */
             position: relative; /* Ensure relative positioning for child elements */
+            outline: none !important; /* Remove focus outline on video container */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
         }
         .vjs-video-container {
             position: relative;
@@ -43,6 +45,8 @@
             border-radius: 20px; /* Match rounded corners */
             display: block; /* Ensure block display for proper sizing */
             background-color: transparent; /* Prevent rendering artifacts */
+            outline: none !important; /* Remove focus outline on video element */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
         }
         .language-dropdown {
             position: absolute;
@@ -139,14 +143,6 @@
             line-height: 40px !important; /* Center icons vertically */
             transition: opacity 0.5s ease-in-out !important; /* Slower fade transition (500ms) */
         }
-        .vjs-control-bar.vjs-hidden {
-            opacity: 0 !important; /* Hide control bar */
-            pointer-events: none !important; /* Prevent interaction when hidden */
-        }
-        .vjs-control-bar.vjs-visible {
-            opacity: 0.8 !important; /* Show control bar */
-            pointer-events: auto !important; /* Allow interaction when visible */
-        }
         .vjs-control-bar .vjs-control {
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
@@ -226,14 +222,12 @@
 
             // Function to show the control bar
             function showControlBar() {
-                controlBar.classList.remove('vjs-hidden');
-                controlBar.classList.add('vjs-visible');
+                controlBar.style.opacity = '0.8'; // Match the CSS opacity
             }
 
             // Function to hide the control bar
             function hideControlBar() {
-                controlBar.classList.remove('vjs-visible');
-                controlBar.classList.add('vjs-hidden');
+                controlBar.style.opacity = '0';
             }
 
             // Reset the timeout on user activity

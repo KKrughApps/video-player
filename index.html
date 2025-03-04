@@ -9,8 +9,8 @@
     <meta property="og:type" content="video.other">
     <style>
         body {
-            margin: 0; /* Remove default body margin */
-            overflow: hidden; /* Prevent scrollbars on body */
+            margin: 0;
+            overflow: hidden;
         }
         .vjs-language-menu, .vjs-playlist-nav { display: inline-block; }
         .video-js {
@@ -19,18 +19,18 @@
             max-width: 100%;
             max-height: 100vh;
             margin: 0 auto;
-            padding-bottom: 70px; /* Padding for control bar */
-            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
-            border-radius: 20px; /* Corner radius */
-            display: block; /* Ensure block display for proper sizing */
-            background-color: transparent; /* Prevent rendering artifacts */
-            position: relative; /* Ensure relative positioning for child elements */
-            outline: none !important; /* Remove focus outline on video container */
-            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
-            -webkit-focus-ring-color: transparent !important; /* Prevent mobile focus ring */
+            padding-bottom: 70px;
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            display: block;
+            background-color: transparent;
+            position: relative;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-focus-ring-color: transparent !important;
         }
         .video-js *:focus {
-            outline: none !important; /* Remove focus outlines on all child elements */
+            outline: none !important;
         }
         .vjs-video-container {
             position: relative;
@@ -39,18 +39,18 @@
             max-width: 100%;
             max-height: 100vh;
             margin: 0 auto;
-            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
-            overflow: hidden; /* Remove vertical scrollbar */
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
         }
         video {
             width: 100%;
             height: 100%;
-            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio on video element */
-            border-radius: 20px; /* Match rounded corners */
-            display: block; /* Ensure block display for proper sizing */
-            background-color: transparent; /* Prevent rendering artifacts */
-            outline: none !important; /* Remove focus outline on video element */
-            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+            aspect-ratio: 1 / 1;
+            border-radius: 20px;
+            display: block;
+            background-color: transparent;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         .language-dropdown {
             position: absolute;
@@ -77,8 +77,8 @@
             top: 100%;
             right: 0;
             background-color: #D3D3D3;
-            border: none; /* Remove stroke */
-            border-radius: 5px; /* Match button corner radius */
+            border: none;
+            border-radius: 5px;
             z-index: 1000;
             list-style: none;
             margin: 0;
@@ -94,11 +94,11 @@
             font-family: Arial, sans-serif;
         }
         .language-item:first-child {
-            border-top-left-radius: 5px; /* Ensure top corners have radius for English */
+            border-top-left-radius: 5px;
             border-top-right-radius: 5px;
         }
         .language-item:last-child {
-            border-bottom-left-radius: 5px; /* Ensure bottom corners have radius */
+            border-bottom-left-radius: 5px;
             border-bottom-right-radius: 5px;
         }
         .language-item:hover {
@@ -113,74 +113,78 @@
         .vjs-big-play-button {
             background-color: #162C2A !important;
             opacity: 0.9 !important;
-            border-radius: 50% !important; /* Ensure circular shape */
-            width: 110px !important; /* Match Carrd's desktop size */
+            border-radius: 50% !important;
+            width: 110px !important;
             height: 110px !important;
-            border: none !important; /* Remove white stroke */
-            line-height: 110px !important; /* Center the triangle vertically */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
+            border: none !important;
+            line-height: 110px !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
             position: absolute !important;
-            left: 50% !important; /* Center horizontally */
-            top: 50% !important; /* Center vertically */
-            transform: translate(-50%, -50%) !important; /* Adjust positioning */
-            margin: 0 !important; /* Remove any default margins */
-            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+            left: 50% !important;
+            top: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            margin: 0 !important;
+            -webkit-tap-highlight-color: transparent !important;
         }
         .vjs-big-play-button:focus {
-            outline: none !important; /* Remove blue focus outline on mobile */
-            outline-style: none !important; /* Extra enforcement for some browsers */
-            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
-            background-color: #1A3C39 !important; /* Subtle background change for accessibility */
+            outline: none !important;
+            outline-style: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+            background-color: #1A3C39 !important;
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
-            color: #FFFFFF !important; /* White triangle */
-            font-size: 45px !important; /* Adjust triangle size */
-            transform: scale(1.2); /* Slightly enlarge for rounded effect */
-            -webkit-text-stroke: 1px #FFFFFF; /* Soften edges for rounded look */
+            color: #FFFFFF !important;
+            font-size: 45px !important;
+            transform: scale(1.2);
+            -webkit-text-stroke: 1px #FFFFFF;
         }
         .vjs-control-bar {
             background-color: #484848 !important;
-            opacity: 0.8 !important; /* Add slight opacity for see-through effect */
+            opacity: 0.8 !important;
             border-bottom-left-radius: 10px !important;
             border-bottom-right-radius: 10px !important;
-            height: 40px !important; /* Match Carrd's control bar height */
-            line-height: 40px !important; /* Center icons vertically */
-            transition: opacity 0.5s ease-in-out !important; /* Slower fade transition (500ms) */
-            display: flex !important; /* Ensure control bar children are visible and laid out correctly */
+            height: 40px !important;
+            line-height: 40px !important;
+            transition: opacity 0.5s ease-in-out !important;
+            display: flex !important;
+        }
+        .vjs-control-bar.vjs-user-inactive,
+        .vjs-control-bar.vjs-user-active {
+            display: flex !important;
+            visibility: visible !important;
         }
         .vjs-control-bar .vjs-control {
-            line-height: 40px !important; /* Center icons vertically */
+            line-height: 40px !important;
             vertical-align: middle !important;
-            font-size: 14px !important; /* Match Carrd's icon size on desktop */
-            margin-top: 1px !important; /* Fine-tune to center icons */
-            display: inline-block !important; /* Ensure controls are visible */
+            font-size: 14px !important;
+            margin-top: 1px !important;
+            display: inline-block !important;
         }
         .vjs-progress-control {
-            line-height: 40px !important; /* Ensure progress bar aligns */
+            line-height: 40px !important;
             vertical-align: middle !important;
-            padding-top: 5px !important; /* Adjusted to lower the scrub bar slightly */
+            padding-top: 6px !important;
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
             height: 100% !important;
-            aspect-ratio: 1 / 1 !important; /* Maintain 1:1 ratio in fullscreen */
+            aspect-ratio: 1 / 1 !important;
         }
-        /* Mobile-specific adjustments */
         @media (max-width: 768px) {
             .vjs-big-play-button {
-                width: 55px !important; /* Match Carrd's mobile size */
+                width: 55px !important;
                 height: 55px !important;
                 line-height: 55px !important;
             }
             .vjs-big-play-button .vjs-icon-placeholder:before {
-                font-size: 28px !important; /* Adjust triangle size for mobile */
+                font-size: 28px !important;
             }
             .vjs-control-bar .vjs-control {
-                font-size: 12px !important; /* Match Carrd's icon size on mobile */
-                margin-top: 1px !important; /* Fine-tune to center icons */
+                font-size: 12px !important;
+                margin-top: 1px !important;
             }
             .vjs-progress-control {
-                padding-top: 4px !important; /* Adjusted to lower the scrub bar slightly on mobile */
+                padding-top: 5px !important;
             }
         }
     </style>
@@ -205,83 +209,82 @@
                     'playToggle',
                     'volumePanel',
                     'currentTimeDisplay',
-                    'timeDivider',
-                    'durationDisplay',
                     'progressControl',
                     'fullscreenToggle'
                 ]
             },
-            inactivityTimeout: 3000 // Fallback for fading
+            inactivityTimeout: 3000
         });
 
-        // Disable Picture-in-Picture completely
         player.pipButton = undefined;
         if (player.tech_) {
             player.tech_.off('dblclick');
             player.tech_.el_.disablePictureInPicture = true;
         }
 
-        // Simplified manual control bar fade-out logic
         function setupControlBarFadeOut() {
             const controlBar = player.controlBar.el_;
             let timeoutId = null;
 
-            // Function to show the control bar
             function showControlBar() {
-                controlBar.style.opacity = '0.8'; // Match the CSS opacity
+                console.log("Showing control bar");
+                controlBar.style.opacity = '0.8';
             }
 
-            // Function to hide the control bar
             function hideControlBar() {
+                console.log("Hiding control bar");
                 controlBar.style.opacity = '0';
             }
 
-            // Reset the timeout on user activity
             function resetFadeTimeout() {
+                console.log("Resetting fade timeout due to user activity");
                 if (timeoutId) {
                     clearTimeout(timeoutId);
                 }
                 showControlBar();
-                timeoutId = setTimeout(hideControlBar, 3000); // Hide after 3 seconds of inactivity
+                timeoutId = setTimeout(hideControlBar, 3000);
             }
 
-            // Initially show the control bar
             showControlBar();
 
-            // Listen for user activity events
             ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click', 'keydown'].forEach(event => {
-                player.el_.addEventListener(event, resetFadeTimeout);
+                player.el_.addEventListener(event, () => {
+                    console.log(`User activity detected: ${event}`);
+                    resetFadeTimeout();
+                });
             });
 
-            // Show control bar when video is paused
-            player.on('pause', showControlBar);
+            player.on('pause', () => {
+                console.log("Video paused, showing control bar");
+                showControlBar();
+            });
 
-            // Reset timeout when video starts playing
-            player.on('play', resetFadeTimeout);
+            player.on('play', () => {
+                console.log("Video playing, resetting fade timeout");
+                resetFadeTimeout();
+            });
         }
 
-        // Call the fade-out setup after the player is ready
         player.ready(() => {
+            console.log("Player is ready, setting up control bar fade-out");
             setupControlBarFadeOut();
         });
 
         let currentVideoIndex = 0;
-        let currentLang = 'en'; // Default language
+        let currentLang = 'en';
         let videos = [];
-        let isAtEnd = false; // Track if video has reached the end
+        let isAtEnd = false;
 
-        // Update duration display
         function updateDurationDisplay(duration) {
-            const durationDisplay = player.controlBar.getChild('durationDisplay').el_;
+            const durationDisplay = player.controlBar.getChild('durationDisplay')?.el_;
             if (durationDisplay) {
                 const minutes = Math.floor(duration / 60);
                 const seconds = Math.floor(duration % 60);
                 durationDisplay.innerHTML = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
             }
-            player.trigger('durationchange'); // Force progress bar update
+            player.trigger('durationchange');
         }
 
-        // Set video source for the selected language
         function adjustPlaybackForLanguage(lang) {
             player.src(lang.video);
             updateDurationDisplay(lang.duration);
@@ -289,7 +292,6 @@
             isAtEnd = false;
         }
 
-        // Handle play and seeking events
         player.on('loadedmetadata', () => {
             console.log("Video loaded metadata. Duration:", player.duration());
         });
@@ -310,7 +312,6 @@
             isAtEnd = false;
         });
 
-        // Language Menu Setup
         const languageButton = document.querySelector('.language-button');
         const languageMenu = document.querySelector('#languageMenu');
 
@@ -340,7 +341,6 @@
             });
         }
 
-        // Fetch videos and initialize
         console.log("Fetching API...");
         fetch('https://video-api.keith-9d4.workers.dev')
             .then(res => res.json())
@@ -354,7 +354,6 @@
                 console.error("Fetch error:", error);
             });
 
-        // Disable right-click on video
         document.getElementById('videoPlayer').addEventListener('contextmenu', (e) => {
             e.preventDefault();
         });

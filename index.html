@@ -148,10 +148,13 @@
             transition: opacity 0.5s ease-in-out !important;
             display: flex !important;
         }
-        .vjs-control-bar.vjs-user-inactive,
-        .vjs-control-bar.vjs-user-active {
-            display: flex !important;
-            visibility: visible !important;
+        .vjs-control-bar.vjs-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        .vjs-control-bar.vjs-visible {
+            opacity: 0.8 !important;
+            pointer-events: auto !important;
         }
         .vjs-control-bar .vjs-control {
             line-height: 40px !important;
@@ -163,7 +166,7 @@
         .vjs-progress-control {
             line-height: 40px !important;
             vertical-align: middle !important;
-            padding-top: 6px !important;
+            padding-top: 4px !important;
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -184,7 +187,7 @@
                 margin-top: 1px !important;
             }
             .vjs-progress-control {
-                padding-top: 5px !important;
+                padding-top: 3px !important;
             }
         }
     </style>
@@ -212,8 +215,7 @@
                     'progressControl',
                     'fullscreenToggle'
                 ]
-            },
-            inactivityTimeout: 3000
+            }
         });
 
         player.pipButton = undefined;
@@ -227,17 +229,16 @@
             let timeoutId = null;
 
             function showControlBar() {
-                console.log("Showing control bar");
-                controlBar.style.opacity = '0.8';
+                controlBar.classList.remove('vjs-hidden');
+                controlBar.classList.add('vjs-visible');
             }
 
             function hideControlBar() {
-                console.log("Hiding control bar");
-                controlBar.style.opacity = '0';
+                controlBar.classList.remove('vjs-visible');
+                controlBar.classList.add('vjs-hidden');
             }
 
             function resetFadeTimeout() {
-                console.log("Resetting fade timeout due to user activity");
                 if (timeoutId) {
                     clearTimeout(timeoutId);
                 }
@@ -248,25 +249,14 @@
             showControlBar();
 
             ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click', 'keydown'].forEach(event => {
-                player.el_.addEventListener(event, () => {
-                    console.log(`User activity detected: ${event}`);
-                    resetFadeTimeout();
-                });
+                player.el_.addEventListener(event, resetFadeTimeout);
             });
 
-            player.on('pause', () => {
-                console.log("Video paused, showing control bar");
-                showControlBar();
-            });
-
-            player.on('play', () => {
-                console.log("Video playing, resetting fade timeout");
-                resetFadeTimeout();
-            });
+            player.on('pause', showControlBar);
+            player.on('play', resetFadeTimeout);
         }
 
         player.ready(() => {
-            console.log("Player is ready, setting up control bar fade-out");
             setupControlBarFadeOut();
         });
 

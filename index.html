@@ -27,6 +27,10 @@
             position: relative; /* Ensure relative positioning for child elements */
             outline: none !important; /* Remove focus outline on video container */
             -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+            -webkit-focus-ring-color: transparent !important; /* Prevent mobile focus ring */
+        }
+        .video-js *:focus {
+            outline: none !important; /* Remove focus outlines on all child elements */
         }
         .vjs-video-container {
             position: relative;
@@ -205,7 +209,8 @@
                     'captionsButton',
                     'fullscreenToggle'
                 ]
-            }
+            },
+            inactivityTimeout: 0 // Disable Video.js's default inactivity timeout
         });
 
         // Disable Picture-in-Picture completely
@@ -355,3 +360,4 @@
     </script>
 </body>
 </html>
+

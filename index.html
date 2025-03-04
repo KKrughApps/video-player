@@ -116,9 +116,12 @@
             top: 50% !important; /* Center vertically */
             transform: translate(-50%, -50%) !important; /* Adjust positioning */
             margin: 0 !important; /* Remove any default margins */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
         }
         .vjs-big-play-button:focus {
             outline: none !important; /* Remove blue focus outline on mobile */
+            outline-style: none !important; /* Extra enforcement for some browsers */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
             background-color: #1A3C39 !important; /* Subtle background change for accessibility */
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
@@ -134,7 +137,7 @@
             border-bottom-right-radius: 10px !important;
             height: 40px !important; /* Match Carrd's control bar height */
             line-height: 40px !important; /* Center icons vertically */
-            transition: opacity 0.3s ease-in-out !important; /* Smooth fade transition */
+            transition: opacity 0.5s ease-in-out !important; /* Slower fade transition (500ms) */
         }
         .vjs-control-bar.vjs-hidden {
             opacity: 0 !important; /* Hide control bar */

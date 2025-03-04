@@ -146,19 +146,14 @@
             height: 40px !important; /* Match Carrd's control bar height */
             line-height: 40px !important; /* Center icons vertically */
             transition: opacity 0.5s ease-in-out !important; /* Slower fade transition (500ms) */
-            display: block !important; /* Ensure control bar remains visible for our opacity transition */
-        }
-        /* Override Video.js's default control bar visibility behavior */
-        .vjs-control-bar.vjs-user-inactive,
-        .vjs-control-bar.vjs-user-active {
-            display: block !important; /* Prevent Video.js from hiding the control bar */
-            visibility: visible !important; /* Ensure visibility */
+            display: flex !important; /* Ensure control bar children are visible and laid out correctly */
         }
         .vjs-control-bar .vjs-control {
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
             font-size: 14px !important; /* Match Carrd's icon size on desktop */
             margin-top: 1px !important; /* Fine-tune to center icons */
+            display: inline-block !important; /* Ensure controls are visible */
         }
         .vjs-progress-control {
             line-height: 40px !important; /* Ensure progress bar aligns */
@@ -217,7 +212,7 @@
                     'fullscreenToggle'
                 ]
             },
-            inactivityTimeout: 0 // Disable Video.js's default inactivity timeout
+            inactivityTimeout: 3000 // Use Video.js's built-in inactivity timeout for fading
         });
 
         // Disable Picture-in-Picture completely
@@ -226,63 +221,6 @@
             player.tech_.off('dblclick');
             player.tech_.el_.disablePictureInPicture = true;
         }
-
-        // Manual control bar fade-out logic
-        function setupControlBarFadeOut() {
-            const controlBar = player.controlBar.el_;
-            let timeoutId = null;
-
-            // Function to show the control bar
-            function showControlBar() {
-                console.log("Showing control bar");
-                controlBar.style.opacity = '0.8'; // Match the CSS opacity
-            }
-
-            // Function to hide the control bar
-            function hideControlBar() {
-                console.log("Hiding control bar");
-                controlBar.style.opacity = '0';
-            }
-
-            // Reset the timeout on user activity
-            function resetFadeTimeout() {
-                console.log("Resetting fade timeout due to user activity");
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
-                showControlBar();
-                timeoutId = setTimeout(hideControlBar, 3000); // Hide after 3 seconds of inactivity
-            }
-
-            // Initially show the control bar
-            showControlBar();
-
-            // Listen for user activity events
-            ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click', 'keydown'].forEach(event => {
-                player.el_.addEventListener(event, () => {
-                    console.log(`User activity detected: ${event}`);
-                    resetFadeTimeout();
-                });
-            });
-
-            // Show control bar when video is paused
-            player.on('pause', () => {
-                console.log("Video paused, showing control bar");
-                showControlBar();
-            });
-
-            // Reset timeout when video starts playing
-            player.on('play', () => {
-                console.log("Video playing, resetting fade timeout");
-                resetFadeTimeout();
-            });
-        }
-
-        // Call the fade-out setup after the player is ready
-        player.ready(() => {
-            console.log("Player is ready, setting up control bar fade-out");
-            setupControlBarFadeOut();
-        });
 
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language

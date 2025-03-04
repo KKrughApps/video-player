@@ -146,6 +146,13 @@
             height: 40px !important; /* Match Carrd's control bar height */
             line-height: 40px !important; /* Center icons vertically */
             transition: opacity 0.5s ease-in-out !important; /* Slower fade transition (500ms) */
+            display: block !important; /* Ensure control bar remains visible for our opacity transition */
+        }
+        /* Override Video.js's default control bar visibility behavior */
+        .vjs-control-bar.vjs-user-inactive,
+        .vjs-control-bar.vjs-user-active {
+            display: block !important; /* Prevent Video.js from hiding the control bar */
+            visibility: visible !important; /* Ensure visibility */
         }
         .vjs-control-bar .vjs-control {
             line-height: 40px !important; /* Center icons vertically */
@@ -227,16 +234,19 @@
 
             // Function to show the control bar
             function showControlBar() {
+                console.log("Showing control bar");
                 controlBar.style.opacity = '0.8'; // Match the CSS opacity
             }
 
             // Function to hide the control bar
             function hideControlBar() {
+                console.log("Hiding control bar");
                 controlBar.style.opacity = '0';
             }
 
             // Reset the timeout on user activity
             function resetFadeTimeout() {
+                console.log("Resetting fade timeout due to user activity");
                 if (timeoutId) {
                     clearTimeout(timeoutId);
                 }
@@ -249,18 +259,28 @@
 
             // Listen for user activity events
             ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click', 'keydown'].forEach(event => {
-                player.el_.addEventListener(event, resetFadeTimeout);
+                player.el_.addEventListener(event, () => {
+                    console.log(`User activity detected: ${event}`);
+                    resetFadeTimeout();
+                });
             });
 
             // Show control bar when video is paused
-            player.on('pause', showControlBar);
+            player.on('pause', () => {
+                console.log("Video paused, showing control bar");
+                showControlBar();
+            });
 
             // Reset timeout when video starts playing
-            player.on('play', resetFadeTimeout);
+            player.on('play', () => {
+                console.log("Video playing, resetting fade timeout");
+                resetFadeTimeout();
+            });
         }
 
         // Call the fade-out setup after the player is ready
         player.ready(() => {
+            console.log("Player is ready, setting up control bar fade-out");
             setupControlBarFadeOut();
         });
 
@@ -360,4 +380,3 @@
     </script>
 </body>
 </html>
-

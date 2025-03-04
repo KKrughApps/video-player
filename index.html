@@ -158,7 +158,7 @@
         .vjs-progress-control {
             line-height: 40px !important; /* Ensure progress bar aligns */
             vertical-align: middle !important;
-            padding-top: 4px !important; /* Adjusted from 5px to 4px to bring scrub bar up */
+            padding-top: 5px !important; /* Adjusted to lower the scrub bar slightly */
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -180,7 +180,7 @@
                 margin-top: 1px !important; /* Fine-tune to center icons */
             }
             .vjs-progress-control {
-                padding-top: 3px !important; /* Adjusted from 4px to 3px to bring scrub bar up */
+                padding-top: 4px !important; /* Adjusted to lower the scrub bar slightly on mobile */
             }
         }
     </style>
@@ -208,11 +208,10 @@
                     'timeDivider',
                     'durationDisplay',
                     'progressControl',
-                    'captionsButton',
                     'fullscreenToggle'
                 ]
             },
-            inactivityTimeout: 3000 // Use Video.js's built-in inactivity timeout for fading
+            inactivityTimeout: 3000 // Fallback for fading
         });
 
         // Disable Picture-in-Picture completely
@@ -221,6 +220,50 @@
             player.tech_.off('dblclick');
             player.tech_.el_.disablePictureInPicture = true;
         }
+
+        // Simplified manual control bar fade-out logic
+        function setupControlBarFadeOut() {
+            const controlBar = player.controlBar.el_;
+            let timeoutId = null;
+
+            // Function to show the control bar
+            function showControlBar() {
+                controlBar.style.opacity = '0.8'; // Match the CSS opacity
+            }
+
+            // Function to hide the control bar
+            function hideControlBar() {
+                controlBar.style.opacity = '0';
+            }
+
+            // Reset the timeout on user activity
+            function resetFadeTimeout() {
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                showControlBar();
+                timeoutId = setTimeout(hideControlBar, 3000); // Hide after 3 seconds of inactivity
+            }
+
+            // Initially show the control bar
+            showControlBar();
+
+            // Listen for user activity events
+            ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click', 'keydown'].forEach(event => {
+                player.el_.addEventListener(event, resetFadeTimeout);
+            });
+
+            // Show control bar when video is paused
+            player.on('pause', showControlBar);
+
+            // Reset timeout when video starts playing
+            player.on('play', resetFadeTimeout);
+        }
+
+        // Call the fade-out setup after the player is ready
+        player.ready(() => {
+            setupControlBarFadeOut();
+        });
 
         let currentVideoIndex = 0;
         let currentLang = 'en'; // Default language

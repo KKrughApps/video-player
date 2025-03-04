@@ -140,7 +140,7 @@
         }
         .vjs-control-bar {
             background-color: #484848 !important;
-            opacity: 0.8 !important;
+            opacity: 0 !important; /* Hidden on first load */
             border-bottom-left-radius: 10px !important;
             border-bottom-right-radius: 10px !important;
             height: 40px !important;
@@ -166,7 +166,7 @@
         .vjs-progress-control {
             line-height: 40px !important;
             vertical-align: middle !important;
-            padding-top: 4px !important;
+            padding-top: 5px !important;
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -187,7 +187,7 @@
                 margin-top: 1px !important;
             }
             .vjs-progress-control {
-                padding-top: 3px !important;
+                padding-top: 4px !important;
             }
         }
     </style>
@@ -245,8 +245,6 @@
                 showControlBar();
                 timeoutId = setTimeout(hideControlBar, 3000);
             }
-
-            showControlBar();
 
             ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'click', 'keydown'].forEach(event => {
                 player.el_.addEventListener(event, resetFadeTimeout);

@@ -96,26 +96,42 @@
             background-color: #162C2A !important;
             opacity: 0.9 !important;
             border-radius: 50% !important; /* Ensure circular shape */
-            width: 120px !important; /* Larger size to match Carrd */
-            height: 120px !important;
+            width: 100px !important; /* Default size for desktop */
+            height: 100px !important;
             border: none !important; /* Remove white stroke */
-            line-height: 120px !important; /* Center the triangle */
+            line-height: 100px !important; /* Center the triangle */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
             color: #FFFFFF !important; /* White triangle */
-            font-size: 60px !important; /* Larger triangle to match Carrd */
+            font-size: 50px !important; /* Adjust triangle size */
         }
         .vjs-control-bar {
             background-color: #484848 !important;
-            border-bottom-left-radius: 10px !important; /* Smaller radius to match Carrd */
+            border-bottom-left-radius: 10px !important;
             border-bottom-right-radius: 10px !important;
-            height: 50px !important; /* Increase height to match Carrd */
+            height: 40px !important; /* Match Carrd's control bar height */
+            line-height: 40px !important; /* Center icons vertically */
+        }
+        .vjs-control-bar .vjs-control {
+            line-height: 40px !important; /* Center icons vertically */
+            vertical-align: middle !important;
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
             height: 100% !important;
             aspect-ratio: 1 / 1 !important; /* Maintain 1:1 ratio in fullscreen */
+        }
+        /* Mobile-specific play button size */
+        @media (max-width: 768px) {
+            .vjs-big-play-button {
+                width: 80px !important; /* Smaller size for mobile */
+                height: 80px !important;
+                line-height: 80px !important;
+            }
+            .vjs-big-play-button .vjs-icon-placeholder:before {
+                font-size: 40px !important; /* Adjust triangle size for mobile */
+            }
         }
     </style>
 </head>

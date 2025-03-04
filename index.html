@@ -24,6 +24,7 @@
             border-radius: 20px; /* Corner radius */
             display: block; /* Ensure block display for proper sizing */
             background-color: transparent; /* Prevent rendering artifacts */
+            position: relative; /* Ensure relative positioning for child elements */
         }
         .vjs-video-container {
             position: relative;
@@ -99,11 +100,13 @@
             width: 100px !important; /* Match Carrd's desktop size */
             height: 100px !important;
             border: none !important; /* Remove white stroke */
-            line-height: 100px !important; /* Center the triangle */
+            line-height: 100px !important; /* Center the triangle vertically */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
+            position: absolute !important;
             left: 50% !important; /* Center horizontally */
             top: 50% !important; /* Center vertically */
             transform: translate(-50%, -50%) !important; /* Adjust positioning */
+            margin: 0 !important; /* Remove any default margins */
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
             color: #FFFFFF !important; /* White triangle */
@@ -121,11 +124,12 @@
         .vjs-control-bar .vjs-control {
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
-            font-size: 18px !important; /* Match Carrd's icon size on desktop */
+            font-size: 14px !important; /* Match Carrd's icon size on desktop */
         }
         .vjs-progress-control {
             line-height: 40px !important; /* Ensure progress bar aligns */
             vertical-align: middle !important;
+            padding-top: 8px !important; /* Fine-tune scrub bar position */
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -143,7 +147,10 @@
                 font-size: 25px !important; /* Adjust triangle size for mobile */
             }
             .vjs-control-bar .vjs-control {
-                font-size: 16px !important; /* Match Carrd's icon size on mobile */
+                font-size: 12px !important; /* Match Carrd's icon size on mobile */
+            }
+            .vjs-progress-control {
+                padding-top: 6px !important; /* Fine-tune scrub bar position on mobile */
             }
         }
     </style>

@@ -117,6 +117,10 @@
             transform: translate(-50%, -50%) !important; /* Adjust positioning */
             margin: 0 !important; /* Remove any default margins */
         }
+        .vjs-big-play-button:focus {
+            outline: none !important; /* Remove blue focus outline on mobile */
+            background-color: #1A3C39 !important; /* Subtle background change for accessibility */
+        }
         .vjs-big-play-button .vjs-icon-placeholder:before {
             color: #FFFFFF !important; /* White triangle */
             font-size: 45px !important; /* Adjust triangle size */
@@ -193,7 +197,8 @@
                     'captionsButton',
                     'fullscreenToggle'
                 ]
-            }
+            },
+            inactivityTimeout: 3000 // Fade out control bar after 3 seconds of inactivity
         });
 
         // Disable Picture-in-Picture completely

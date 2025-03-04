@@ -69,7 +69,8 @@
             top: 100%;
             right: 0;
             background-color: #D3D3D3;
-            border: 1px solid #B0B0B0;
+            border: none; /* Remove stroke */
+            border-radius: 5px; /* Match button corner radius */
             z-index: 1000;
             list-style: none;
             margin: 0;
@@ -116,6 +117,7 @@
         }
         .vjs-control-bar {
             background-color: #484848 !important;
+            opacity: 0.8 !important; /* Add slight opacity for see-through effect */
             border-bottom-left-radius: 10px !important;
             border-bottom-right-radius: 10px !important;
             height: 40px !important; /* Match Carrd's control bar height */
@@ -125,12 +127,12 @@
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
             font-size: 14px !important; /* Match Carrd's icon size on desktop */
-            margin-top: -2px !important; /* Fine-tune to center icons */
+            margin-top: 0px !important; /* Fine-tune to center icons */
         }
         .vjs-progress-control {
             line-height: 40px !important; /* Ensure progress bar aligns */
             vertical-align: middle !important;
-            padding-top: 6px !important; /* Fine-tune scrub bar position */
+            padding-top: 4px !important; /* Fine-tune scrub bar position */
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -149,10 +151,10 @@
             }
             .vjs-control-bar .vjs-control {
                 font-size: 12px !important; /* Match Carrd's icon size on mobile */
-                margin-top: -1px !important; /* Fine-tune to center icons */
+                margin-top: 0px !important; /* Fine-tune to center icons */
             }
             .vjs-progress-control {
-                padding-top: 5px !important; /* Fine-tune scrub bar position on mobile */
+                padding-top: 3px !important; /* Fine-tune scrub bar position on mobile */
             }
         }
     </style>

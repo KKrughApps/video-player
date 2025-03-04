@@ -97,10 +97,10 @@
             background-color: #162C2A !important;
             opacity: 0.9 !important;
             border-radius: 50% !important; /* Ensure circular shape */
-            width: 100px !important; /* Match Carrd's desktop size */
-            height: 100px !important;
+            width: 110px !important; /* Match Carrd's desktop size */
+            height: 110px !important;
             border: none !important; /* Remove white stroke */
-            line-height: 100px !important; /* Center the triangle vertically */
+            line-height: 110px !important; /* Center the triangle vertically */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
             position: absolute !important;
             left: 50% !important; /* Center horizontally */
@@ -110,7 +110,7 @@
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
             color: #FFFFFF !important; /* White triangle */
-            font-size: 40px !important; /* Adjust triangle size */
+            font-size: 45px !important; /* Adjust triangle size */
             transform: scale(1.2); /* Slightly enlarge for rounded effect */
             -webkit-text-stroke: 1px #FFFFFF; /* Soften edges for rounded look */
         }
@@ -125,11 +125,12 @@
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
             font-size: 14px !important; /* Match Carrd's icon size on desktop */
+            margin-top: -2px !important; /* Fine-tune to center icons */
         }
         .vjs-progress-control {
             line-height: 40px !important; /* Ensure progress bar aligns */
             vertical-align: middle !important;
-            padding-top: 8px !important; /* Fine-tune scrub bar position */
+            padding-top: 6px !important; /* Fine-tune scrub bar position */
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -139,18 +140,19 @@
         /* Mobile-specific adjustments */
         @media (max-width: 768px) {
             .vjs-big-play-button {
-                width: 50px !important; /* Match Carrd's mobile size */
-                height: 50px !important;
-                line-height: 50px !important;
+                width: 55px !important; /* Match Carrd's mobile size */
+                height: 55px !important;
+                line-height: 55px !important;
             }
             .vjs-big-play-button .vjs-icon-placeholder:before {
-                font-size: 25px !important; /* Adjust triangle size for mobile */
+                font-size: 28px !important; /* Adjust triangle size for mobile */
             }
             .vjs-control-bar .vjs-control {
                 font-size: 12px !important; /* Match Carrd's icon size on mobile */
+                margin-top: -1px !important; /* Fine-tune to center icons */
             }
             .vjs-progress-control {
-                padding-top: 6px !important; /* Fine-tune scrub bar position on mobile */
+                padding-top: 5px !important; /* Fine-tune scrub bar position on mobile */
             }
         }
     </style>

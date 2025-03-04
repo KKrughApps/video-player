@@ -96,15 +96,18 @@
             background-color: #162C2A !important;
             opacity: 0.9 !important;
             border-radius: 50% !important; /* Ensure circular shape */
-            width: 100px !important; /* Default size for desktop */
-            height: 100px !important;
+            width: 90px !important; /* Match Carrd's desktop size */
+            height: 90px !important;
             border: none !important; /* Remove white stroke */
-            line-height: 100px !important; /* Center the triangle */
+            line-height: 90px !important; /* Center the triangle */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
         }
         .vjs-big-play-button .vjs-icon-placeholder:before {
             color: #FFFFFF !important; /* White triangle */
-            font-size: 50px !important; /* Adjust triangle size */
+            font-size: 40px !important; /* Adjust triangle size */
+            /* Approximate rounded points by using a custom transform */
+            transform: scale(1.2); /* Slightly enlarge for rounded effect */
+            -webkit-text-stroke: 1px #FFFFFF; /* Soften edges for rounded look */
         }
         .vjs-control-bar {
             background-color: #484848 !important;
@@ -116,6 +119,11 @@
         .vjs-control-bar .vjs-control {
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
+            font-size: 20px !important; /* Increase icon size to match Carrd */
+        }
+        .vjs-progress-control {
+            line-height: 40px !important; /* Ensure progress bar aligns */
+            vertical-align: middle !important;
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -125,12 +133,12 @@
         /* Mobile-specific play button size */
         @media (max-width: 768px) {
             .vjs-big-play-button {
-                width: 80px !important; /* Smaller size for mobile */
-                height: 80px !important;
-                line-height: 80px !important;
+                width: 60px !important; /* Match Carrd's mobile size */
+                height: 60px !important;
+                line-height: 60px !important;
             }
             .vjs-big-play-button .vjs-icon-placeholder:before {
-                font-size: 40px !important; /* Adjust triangle size for mobile */
+                font-size: 30px !important; /* Adjust triangle size for mobile */
             }
         }
     </style>

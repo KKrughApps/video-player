@@ -85,6 +85,14 @@
             cursor: pointer;
             font-family: Arial, sans-serif;
         }
+        .language-item:first-child {
+            border-top-left-radius: 5px; /* Ensure top corners have radius for English */
+            border-top-right-radius: 5px;
+        }
+        .language-item:last-child {
+            border-bottom-left-radius: 5px; /* Ensure bottom corners have radius */
+            border-bottom-right-radius: 5px;
+        }
         .language-item:hover {
             background-color: #B0B0B0;
         }
@@ -127,12 +135,12 @@
             line-height: 40px !important; /* Center icons vertically */
             vertical-align: middle !important;
             font-size: 14px !important; /* Match Carrd's icon size on desktop */
-            margin-top: 0px !important; /* Fine-tune to center icons */
+            margin-top: 1px !important; /* Fine-tune to center icons */
         }
         .vjs-progress-control {
             line-height: 40px !important; /* Ensure progress bar aligns */
             vertical-align: middle !important;
-            padding-top: 4px !important; /* Fine-tune scrub bar position */
+            padding-top: 5px !important; /* Fine-tune scrub bar position */
         }
         .vjs-fullscreen .video-js {
             width: 100% !important;
@@ -151,10 +159,10 @@
             }
             .vjs-control-bar .vjs-control {
                 font-size: 12px !important; /* Match Carrd's icon size on mobile */
-                margin-top: 0px !important; /* Fine-tune to center icons */
+                margin-top: 1px !important; /* Fine-tune to center icons */
             }
             .vjs-progress-control {
-                padding-top: 3px !important; /* Fine-tune scrub bar position on mobile */
+                padding-top: 4px !important; /* Fine-tune scrub bar position on mobile */
             }
         }
     </style>

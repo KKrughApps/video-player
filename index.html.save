@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+    <meta property="og:title" content="Patient Education Video">
+    <meta property="og:description" content="Watch our knee pain education video in multiple languages!">
+    <meta property="og:image" content="https://pub-d5e42b8def5e4bd6a6319ce46bf101dd.r2.dev/patient_education_1_en_thumbnail.jpg?v=2">
+    <meta property="og:url" content="https://video-player-eim.pages.dev">
+    <meta property="og:type" content="video.other">
+    <style>
+        body {
+            margin: 0; /* Remove default body margin */
+            overflow: hidden; /* Prevent scrollbars on body */
+        }
+        .vjs-language-menu, .vjs-playlist-nav { display: inline-block; }
+        .video-js {
+            width: 1920px;
+            height: 1920px;
+            max-width: 100%;
+            max-height: 100vh;
+            margin: 0 auto;
+            padding-bottom: 70px; /* Padding for control bar */
+            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
+            border-radius: 20px; /* Corner radius */
+            display: block; /* Ensure block display for proper sizing */
+            background-color: transparent; /* Prevent rendering artifacts */
+            position: relative; /* Ensure relative positioning for child elements */
+            outline: none !important; /* Remove focus outline on video container */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+        }
+        .vjs-video-container {
+            position: relative;
+            width: 1920px;
+            height: 1920px;
+            max-width: 100%;
+            max-height: 100vh;
+            margin: 0 auto;
+            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio */
+            overflow: hidden; /* Remove vertical scrollbar */
+        }
+        video {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1 / 1; /* Enforce 1:1 ratio on video element */
+            border-radius: 20px; /* Match rounded corners */
+            display: block; /* Ensure block display for proper sizing */
+            background-color: transparent; /* Prevent rendering artifacts */
+            outline: none !important; /* Remove focus outline on video element */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+        }
+        .language-dropdown {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+        .language-button {
+            background-color: #D3D3D3;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            border-radius: 5px;
+        }
+        .language-button:hover {
+            background-color: #B0B0B0;
+        }
+        .language-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #D3D3D3;
+            border: none; /* Remove stroke */
+            border-radius: 5px; /* Match button corner radius */
+            z-index: 1000;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .language-menu.visible {
+            display: block;
+        }
+        .language-item {
+            color: white;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+        }
+        .language-item:first-child {
+            border-top-left-radius: 5px; /* Ensure top corners have radius for English */
+            border-top-right-radius: 5px;
+        }
+        .language-item:last-child {
+            border-bottom-left-radius: 5px; /* Ensure bottom corners have radius */
+            border-bottom-right-radius: 5px;
+        }
+        .language-item:hover {
+            background-color: #B0B0B0;
+        }
+        .vjs-selected {
+            background-color: #B0B0B0;
+        }
+        .vjs-duration {
+            display: inline-block !important;
+        }
+        .vjs-big-play-button {
+            background-color: #162C2A !important;
+            opacity: 0.9 !important;
+            border-radius: 50% !important; /* Ensure circular shape */
+            width: 110px !important; /* Match Carrd's desktop size */
+            height: 110px !important;
+            border: none !important; /* Remove white stroke */
+            line-height: 110px !important; /* Center the triangle vertically */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important; /* Add subtle shadow */
+            position: absolute !important;
+            left: 50% !important; /* Center horizontally */
+            top: 50% !important; /* Center vertically */
+            transform: translate(-50%, -50%) !important; /* Adjust positioning */
+            margin: 0 !important; /* Remove any default margins */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+        }
+        .vjs-big-play-button:focus {
+            outline: none !important; /* Remove blue focus outline on mobile */
+            outline-style: none !important; /* Extra enforcement for some browsers */
+            -webkit-tap-highlight-color: transparent !important; /* Prevent mobile tap highlight */
+            background-color: #1A3C39 !important; /* Subtle background change for accessibility */
+        }
+        .vjs-big-play-button .vjs-icon-placeholder:before {
+            color: #FFFFFF !important; /* White triangle */
+            font-size: 45px !important; /* Adjust triangle size */
+            transform: scale(1.2); /* Slightly enlarge for rounded effect */
+            -webkit-text-stroke: 1px #FFFFFF; /* Soften edges for rounded look */
+        }
+        .vjs-control-bar {
+            background-color: #484848 !important;
+            opacity: 0.8 !important; /* Add slight opacity for see-through effect */
+            border-bottom-left-radius: 10px !important;
+            border-bottom-right-radius: 10px !important;
+            height: 40px !important; /* Match Carrd's control bar height */
+            line-height: 40px !important; /* Center icons vertically */
+            transition: opacity 0.5s ease-in-out !important; /* Slower fade transition (500ms) */
+        }
+        .vjs-control-bar .vjs-control {
+            line-height: 40px !important; /* Center icons vertically */
+            vertical-align: middle !important;
+            font-size: 14px !important; /* Match Carrd's icon size on desktop */
+            margin-top: 1px !important; /* Fine-tune to center icons */
+        }
+        .vjs-progress-control {
+            line-height: 40px !important; /* Ensure progress bar aligns */
+            vertical-align: middle !important;
+            padding-top: 4px !important; /* Adjusted from 5px to 4px to bring scrub bar up */
+        }
+        .vjs-ful
